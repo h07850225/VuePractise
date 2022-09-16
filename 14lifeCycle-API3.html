@@ -241,16 +241,20 @@
                     // 不加toFixed會有不明的bug
                     // this.orderList[checkIndex]['total'] = (this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count'])
                     
+                    //toFixed()會將值轉為字串
                     this.orderList[checkIndex]['total'] = ((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2)) ;
+                    
 
                     
                 }else{
                     //項目沒存在訂單中，加入訂單
                     // 1. 三個點：透過"展開運算符"將item原封不動地丟進去 https://eyesofkids.gitbooks.io/javascript-start-from-es6/content/part4/rest_spread.html
                     // 2. 增加一個key：count=0
+                    //整個推進去
                     this.orderList.push({
                         ...item,
-                        count: 1 
+                        count: 1,
+                        total: +item.price,
                     })
                 }
                 //Set localStorage
@@ -271,7 +275,8 @@
                     // 不加toFixed會有不明的bug
                     // this.orderList[checkIndex]['total'] = (this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count'])
 
-                    this.orderList[checkIndex]['total'] = ((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2))
+                    //toFixed()會將值轉為字串
+                    this.orderList[checkIndex]['total'] = +((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2))
                     
 
                 }else{
@@ -292,48 +297,23 @@
                     return 0
                 }
             },
-            set(){
-                $set(orderList,1,{});
-            }
+            // set(){
+            //     $set(orderList,1,{});
+            // }
         },
         computed:{
             // parse 將字串轉為物件  stringify ()內陣列轉為字串
             shoppingCart:function(){
                 return JSON.parse(JSON.stringify(this.orderList))
-            }
-
-            // productsInCart () {
-            // return this.item
-            //     // 只顯示購買數量 > 0 的項目
-            //     .filter(p => p.amount)
-            //     // 算出每個產品的小計
-            //     .map(p => {
-            //         p.sum = p.amount * p.price
-            //         return p
-            //     })
-        // },
-
-            // 木前購買的金額
-            // total () {
-            //     return this.productsInCart
-            //         .reduce((sum, p) => (sum + p.sum), 0)
-            // }
-        },
-        watch:{
-            shoppingCart:{
-                handler(newVal,oldVal){
-                    this.totalPrice="";
-                    for(let i=0;i<this.orderList.length;i++){
-
-                        //不加toFixed會有不明的bug???
-                        // this.totalPrice = parseFloat(this.totalPrice+this.orderList[i].price*this.orderList[i].count);
-
-                        this.totalPrice = (parseFloat(this.totalPrice+this.orderList[i].price*this.orderList[i].count)).toFixed(2);
-                        
-                        // console.log(this.totalPrice);
-                    }
-                }
-            }
+            },
+            //reduce
+            totalPrice() {
+                const sum = 0;
+                //因前面的toFixed()會將值轉為字串 所以後面的currentValue前面加+符號  將值轉為數值
+                //reduce將orderList陣列裡面的值相加，最後輸出總金額(totalPrice)
+                return (this.orderList.reduce((previousValue, currentValue) => previousValue + +currentValue.total,
+                sum)).toFixed(2);
+            },
         },
         mounted(){
             //畫面載入後，DOM物件(div#view)已被建立
