@@ -241,9 +241,9 @@
                     // 不加toFixed會有不明的bug
                     // this.orderList[checkIndex]['total'] = (this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count'])
                     
-                    //toFixed()會將值轉為字串
                     this.orderList[checkIndex]['total'] = ((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2)) ;
-                    
+                    console.log(((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2)))
+                    // this.$_set(this.orderList[checkIndex],'total', value)
 
                     
                 }else{
@@ -275,7 +275,6 @@
                     // 不加toFixed會有不明的bug
                     // this.orderList[checkIndex]['total'] = (this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count'])
 
-                    //toFixed()會將值轉為字串
                     this.orderList[checkIndex]['total'] = +((this.orderList[checkIndex]['price'] * this.orderList[checkIndex]['count']).toFixed(2))
                     
 
@@ -306,15 +305,52 @@
             shoppingCart:function(){
                 return JSON.parse(JSON.stringify(this.orderList))
             },
-            //reduce
-            totalPrice() {
+            $_totalPrice() {
                 const sum = 0;
-                //因前面的toFixed()會將值轉為字串 所以後面的currentValue前面加+符號  將值轉為數值
-                //reduce將orderList陣列裡面的值相加，最後輸出總金額(totalPrice)
-                //https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#%E6%8F%8F%E8%BF%B0
-                return (this.orderList.reduce((previousValue, currentValue) => previousValue + +currentValue.total,
-                sum)).toFixed(2);
+                return this.orderList.reduce((previousValue, currentValue) => previousValue + +currentValue.total,
+                sum)
             },
+
+            // productsInCart () {
+            // return this.item
+            //     // 只顯示購買數量 > 0 的項目
+            //     .filter(p => p.amount)
+            //     // 算出每個產品的小計
+            //     .map(p => {
+            //         p.sum = p.amount * p.price
+            //         return p
+            //     })
+        // },
+
+            // 木前購買的金額
+            // total () {
+            //     return this.productsInCart
+            //         .reduce((sum, p) => (sum + p.sum), 0)
+            // }
+        },
+        watch:{
+            // shoppingCart:{
+            //     handler(newVal,oldVal){
+            //         this.totalPrice=0;
+            //         for(let i=0;i<this.orderList.length;i++){
+
+            //             //不加toFixed會有不明的bug???
+            //             // this.totalPrice = parseFloat(this.totalPrice+this.orderList[i].price*this.orderList[i].count);
+
+            //             this.totalPrice = (parseFloat(+this.totalPrice + +this.orderList[i].total)).toFixed(2);
+            //         }
+            //     }
+            // },
+            shoppingCart() {
+                    this.totalPrice=0;
+                    for(let i=0;i<this.orderList.length;i++){
+
+                        //不加toFixed會有不明的bug???
+                        // this.totalPrice = parseFloat(this.totalPrice+this.orderList[i].price*this.orderList[i].count);
+
+                        this.totalPrice = (parseFloat(+this.totalPrice + +this.orderList[i].total)).toFixed(2);
+                    }
+            }
         },
         mounted(){
             //畫面載入後，DOM物件(div#view)已被建立
