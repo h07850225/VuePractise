@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <style>
+    .show{
+        position: relative;
+        width: 100%;
+        text-align: center;
+        /* 讓child div不准換行 */
+        white-space: nowrap;
+        overflow: hidden;
+        overflow-x: scroll;
+    }
+    .imgContent{
+        width: 20rem;
+        height: 20rem;
+        background: #f0f0f0;
+        margin: 1rem auto;
+    }
+    .smallImgContent{
+        position: relative;
+        display: inline-block;
+        width: 5rem;
+        height: 5rem;
+        border: 1px dashed #ddd;
+        opacity: 0.3;
+    }
+    .activeSlide{
+        opacity: 1;
+    }
+    img{
+        height: 100%;
+    }
+  </style>
+</head>
+<body>
+    <div id="app">
+        <div class="show">
+            <div class="imgContent">
+                <img :src="`https://picsum.photos/200/300?random=${currentPage}`" alt="">
+            </div>
+            <div class="btnContent">
+                <button @click="prevPage"> < </button>
+                <div v-for="(slide,value) in paginations"
+                    class="smallImgContent"
+                    :class="{
+                            'activeSlide':(currentPage === slide)
+                            }"
+                    @click="selectPage(slide)"
+                >
+                <img :src="`https://picsum.photos/200/200?random=${slide}`">
+                <!-- {{value}} -->
+                </div>
+                <button @click="nextPage"> > </button>    
+            </div>
+        </div>
+    </div>     
+    <script>
+Vue.createApp({
+    data(){
+        return{
+            currentPage:1,
+            paginations:10
+        }   
+    },
+methods:{
+   prevPage(){
+            //當前頁面是第一頁，不能再往前
+            if(this.currentPage === 1) return
+            //this.currentPage = this.currentPage - 1
+            this.currentPage -= 1
+        },
+        nextPage(){
+            //當前頁面是最後一頁，不能再往後
+            if(this.currentPage >= this.paginations) return
+            //this.currentPage = this.currentPage + 1
+            this.currentPage += 1
+        },
+        selectPage(val){
+            this.currentPage = val
+        }
+    }
+}).mount('#app');
+    </script>
+</body>
+</html>

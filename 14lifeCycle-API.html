@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14生命週期-API</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style>
+        #view{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .card{
+            width: 22%;
+            height: 600px;
+            border: 2px solid black;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            overflow-y: scroll;
+        }
+        .category{
+            margin-bottom: 20px;
+        }
+
+        .imgBox{
+            height: 200px;
+            width: 200px;
+            background-color: #fa0;
+            margin: auto;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="view">
+        <div v-for="(item) in productList" class="card" :key="item.id">
+            <div class="category">{{item.category}}</div>
+            <div class="description">{{item.description}}</div>
+            <div class="id">{{item.id}}</div>
+            <div class="imgBox">
+                <img :src="item.image" alt="">
+            </div>
+            <div class="price">Price:${{item.price}}</div>
+            <div class="star">
+                <!-- {{item.rating.rate}} -->
+                <span v-for="i in (parseInt(item.rating.rate))">⭐</span>
+            </div>
+            <div class="count">
+                {{item.rating.count}}
+            </div>
+        </div>
+        
+    </div>
+    <script>
+        const VM = {
+            data(){
+                return{
+                    productList:[],
+                }
+            },
+            methods:{
+                trigger(){
+                    // console.log('trigger');
+                    // this.remove()
+                },
+                initView(){
+                    fetch('https://fakestoreapi.com/products')
+                    .then(response=> {
+                        console.log(this)
+                        return response.json();
+                    })
+                    .then(myJson=> {
+                        console.log(myJson);
+                        this.productList = myJson
+                    });},
+                mountView(){
+                    // this.timeOutRefresh = setInterval(()=>{
+                    //     console.log('每五秒要做的事');
+                    //     this.msg2 -= 5;
+                    // },1000)
+                },
+                remove(){
+                    clearTimeout(this.timeOutProcessId);
+                    clearInterval(this.timeOutRefresh);
+                }      
+            },
+            beforeCreated(){
+                console.log('beforeCreated');
+                console.log(document.getElementById('view'));
+
+            },
+            created(){
+                // vue開始被建立
+                console.log('create');
+                this.initView()
+            },
+            mounted(){
+                // 畫面載入的時候
+                console.log('mounted');
+                this.mountView()
+            },
+            beforeUnmount(){
+                // 計時器要清掉
+                //removeTimeout...
+                console.log('beforeUnmount');
+                this.remove()
+            }
+        }
+        Vue.createApp(VM).mount('#view')
+    </script>
+</body>
+</html>

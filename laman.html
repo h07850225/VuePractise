@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+  padding: 0;
+  margin: 0;
+}
+.item{
+  padding: 1em;
+}
+.item img{
+  width: 14em;
+  height: 14em;
+}
+
+.menu{
+  display: flex;
+  justify-content: center;
+}
+.banner{
+  height: 300px;
+  width: 100%;
+}
+.container h1{
+  text-align: center;
+}
+
+    </style>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="view">
+        <div class="container">
+            <img class = "banner" src="https://img.letsplay.tw/uploads/20210812154505_59.jpg" alt="">
+            <h1>輪播看不懂只好賣拉面</h1>
+            <div class="menu">
+                <!-- <div class="item">
+                    <img src="http://www.tabirai.net/tabirai-uploader/img/0005408/s1_0005408.jpg" alt="">
+                    <p>醬油之不想努力拉面</p>
+                    客製
+                    <hr>
+                    <input type="radio" name="customize">面硬
+                    <input type="radio" name="customize">面軟
+                    <p>購買數量:{{soySauce}}</p>
+                    <p>剩餘數量:{{soyStock}}</p>
+                    <button @click="buy_soySauce(1)">點擊購買+</button>
+                </div>
+                <div class="item">
+                    <img src="http://3.bp.blogspot.com/-aj0ideQcly0/VfZ5RvLGyDI/AAAAAAAAWzE/Vy6U0R6vs90/s1600/IMG_2848.jpg" alt="">
+                    <p>擔擔之中樂透頭獎面</p>
+                    客製
+                    <hr>
+                    <input type="radio" name="customize">面硬
+                    <input type="radio" name="customize">面軟
+                    <p>購買數量:{{dandan}}</p>
+                    <p>剩餘數量:{{danStock}}</p>
+                    <button @click="buy_dandan()">點擊購買+</button>
+                </div>
+                <div class="item">
+                    <img src="https://farm1.static.flickr.com/380/32022985490_3e2bfbe774_b.jpg" alt="">
+                    <p>味噌之不想熬夜了叉燒</p>
+                    客製
+                    <hr>
+                    <input type="radio" name="customize">面硬
+                    <input type="radio" name="customize">面軟
+                    <p>購買數量: {{miso}}</p>
+                    <p>剩餘數量:{{misoStock}}</p>
+                    <button @click="buy_miso(1)">點擊購買+</button>
+                </div> -->
+                <div class="item" 
+                v-for="(item,index) in lamanlist"
+                :key="index"
+                >
+                <!-- {{item}} -->
+                    <img :src="item.img" alt="">
+                    <p>{{item.title}}</p>
+                    客製
+                    <hr>
+                    <input type="radio" v-model="item.type" value="hard" name="customize" key="item.id">麵硬
+                    <input type="radio" v-model="item.type" value="soft" name="customize" key="item.id">麵軟
+                    <p>購買數量: {{item.sauce}}</p>
+                    <p>剩餘數量:{{item.stock}}</p>
+                    <button @click="buy(index)">1點擊購買+</button>
+                    <button @click="buy2(item)">2點擊購買+</button>
+                </div>
+            </div> 
+            <button @click="addCart">放到購物車</button>
+            <div class="menu order">購物清單
+                <div class="item" 
+                v-for="(item,index) in lamanlist"
+                :key="index"
+                >
+                    <p>{{item.title}}</p>
+                    <hr>
+                    <p>購買數量: {{item.sauce}}</p>
+                </div>
+            </div>
+        </div>
+      </div>
+      <script>
+        const VM = {
+        data(){
+            return {
+                lamanlist:[
+                    {
+                        id:'A',
+                        img:"http://www.tabirai.net/tabirai-uploader/img/0005408/s1_0005408.jpg",
+                        title:"醬油之不想努力拉麵",
+                        sauce:0,
+                        stock:0
+                    },
+                    {
+                        id:'B',
+                        img:"http://3.bp.blogspot.com/-aj0ideQcly0/VfZ5RvLGyDI/AAAAAAAAWzE/Vy6U0R6vs90/s1600/IMG_2848.jpg",
+                        title:"擔擔之中樂透頭獎面",
+                        sauce:0,
+                        stock:0
+                    },
+                    {
+                        id:'C',
+                        img:"https://farm1.static.flickr.com/380/32022985490_3e2bfbe774_b.jpg",
+                        title:"味噌之不想熬夜了叉燒",
+                        sauce:0,
+                        stock:0
+                    }
+                ],
+                orderlist:[]
+            }
+        },
+        methods: {
+            buy(item) {
+                console.log(item)
+                this.lamanlist[item]["sauce"] += 1
+                this.lamanlist[item]["stock"] -= 1
+                },
+            buy2(item){
+                const target = this.lamanlist.findIndex((item2)=>{
+                    return item2.id === item.id
+                })
+                console.log(item)
+                this.lamanlist[target]['sauce']+=1
+                this.lamanlist[target]['stock']-=1
+                // const target = this.lamanlist.findIndex((item2) => {
+                //     return item2.id === item.id
+                // })
+                // this.lamanlist[target]["sauce"]  +=1
+                // this.lamanlist[target]["stock"]  -=1
+            },
+            addCart(){
+                this.orderlist= this.lamanlist
+                const tt = JSON.stringify(this.orderlist)
+                console.log(typeof tt);
+                localStorage.setItem('小龜2了',tt)
+            },
+            getData(){
+                const rr =localStorage.getItem('小龜2了')
+                const parse = JSON.parse(rr)
+                console.log(rr);
+                console.log(parse);
+            }
+        },
+        watch: {
+    // soySauce: function(){
+    //         this.SsoldOut = this.soySauce === 0
+    //         alert("賣完了")
+    //         },
+        }
+    }
+    Vue.createApp(VM).mount('#view')
+      </script>
+</body>
+</html>
